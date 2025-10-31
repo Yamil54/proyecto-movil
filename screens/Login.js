@@ -4,13 +4,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../src/config/firebaseConfig";
 
 export default function Login({ navigation }) {
-  const [email, setEmail] = useState("yamilayarde4@gmail.com");
-  const [password, setPassword] = useState("123456789");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigation.replace("Home");
+      navigation.replace("Main");
     } catch (error) {
       Alert.alert("Error", error.message);
     }
