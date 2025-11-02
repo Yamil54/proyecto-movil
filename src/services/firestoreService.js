@@ -1,63 +1,85 @@
-import {collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc, query, where,} from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getDoc,
+  query,
+  where,
+} from "firebase/firestore";
 import { db, auth } from "../config/firebaseConfig";
 
-// Crear una nueva tarea
-export const createTask = async (data) => {
-  const userId = auth.currentUser?.uid;
-  const docRef = await addDoc(collection(db, "tasks"), {
-    ...data,
-    userId,
-    createdAt: new Date(),
-  });
-  return docRef.id;
+// 🔧 Helper para obtener userId
+const getUserId = () => {
+  const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error("Usuario no autenticado");
+  return uid;
 };
 
-// Obtener todas las tareas del usuario actual
-export const getTasks = async () => {
-  const userId = auth.currentUser?.uid;
-  const q = query(collection(db, "tasks"), where("userId", "==", userId));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-};
+// 🔧 Helper para mapear snapshot
+const mapSnapshot = (snapshot) =>
+  snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 
-// Obtener una tarea por ID
+// =======================
+// 📦 CRUD de Productos (tasks)
+// =======================
+export const createTask = async (data) =>
+  (await addDoc(collection(db, "tasks"), { ...data, userId: getUserId(), createdAt: new Date() })).id;
+
+export const getTasks = async () =>
+  mapSnapshot(await getDocs(query(collection(db, "tasks"), where("userId", "==", getUserId()))));
+
 export const getTaskById = async (id) => {
-  const docRef = doc(db, "tasks", id);
-  const snapshot = await getDoc(docRef);
-  return { id: snapshot.id, ...snapshot.data() };
+  const snap = await getDoc(doc(db, "tasks", id));
+  return { id: snap.id, ...snap.data() };
 };
 
-// Actualizar una tarea
-export const updateTask = async (id, data) => {
-  const docRef = doc(db, "tasks", id);
-  await updateDoc(docRef, data);
-};
+export const updateTask = (id, data) => updateDoc(doc(db, "tasks", id), data);
 
-// Eliminar una tarea
-export const deleteTask = async (id) => {
-  const docRef = doc(db, "tasks", id);
-  await deleteDoc(docRef);
-};
+export const deleteTask = (id) => deleteDoc(doc(db, "tasks", id));
 
-// Registrar una consulta personalizada escrita por el usuario
+// =======================
+// 🛒 Carrito
+// =======================
+export const addToCart = async (producto, cantidad = 1) =>
+  (await addDoc(collection(db, "carrito"), {
+    userId: getUserId(),
+    productoId: producto.id,
+    nombre: producto.title,
+    precio: producto.precio,
+    cantidad,
+    createdAt: new Date(),
+  })).id;
+
+export const getCartItems = async () =>
+  mapSnapshot(await getDocs(query(collection(db, "carrito"), where("userId", "==", getUserId()))));
+
+export const updateCartItem = (id, cantidad) =>
+  updateDoc(doc(db, "carrito", id), { cantidad });
+
+export const deleteCartItem = (id) => deleteDoc(doc(db, "carrito", id));
+
+// =======================
+// 📝 Consultas personalizadas
+// =======================
 export const registerConsultaPersonalizada = async (mensaje) => {
-  const userId = auth.currentUser?.uid;
-  const userEmail = auth.currentUser?.email;
-
   const now = new Date();
   const fechaHora = `${now.getDate().toString().padStart(2, "0")}/${
     (now.getMonth() + 1).toString().padStart(2, "0")
-  }/${now.getFullYear()} - ${
-    now.getHours().toString().padStart(2, "0")
-  }:${now.getMinutes().toString().padStart(2, "0")}`;
+  }/${now.getFullYear()} - ${now.getHours().toString().padStart(2, "0")}:${now
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
 
-  const docRef = await addDoc(collection(db, "consultas"), {
-    userId,
-    email: userEmail,
-    mensaje,
-    date: fechaHora,
-    createdAt: now,
-  });
-
-  return docRef.id;
+  return (
+    await addDoc(collection(db, "consultas"), {
+      userId: getUserId(),
+      email: auth.currentUser?.email,
+      mensaje,
+      date: fechaHora,
+      createdAt: now,
+    })
+  ).id;
 };

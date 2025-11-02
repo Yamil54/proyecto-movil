@@ -1,3 +1,4 @@
+// screens/Detail.js
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { getTaskById, deleteTask } from "../src/services/firestoreService";
@@ -11,9 +12,18 @@ export default function Detail({ route, navigation }) {
   }, [id]);
 
   const handleDelete = async () => {
-    await deleteTask(id);
-    Alert.alert("Éxito", "Tarea eliminada");
-    navigation.goBack();
+    Alert.alert("Confirmar", "¿Seguro que deseas eliminar este producto?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: async () => {
+          await deleteTask(id);
+          Alert.alert("Éxito", "Producto eliminado");
+          navigation.goBack();
+        },
+      },
+    ]);
   };
 
   if (!task) return <Text style={{ marginTop: 40, textAlign: "center" }}>Cargando...</Text>;
@@ -22,6 +32,7 @@ export default function Detail({ route, navigation }) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{task.title}</Text>
       <Text>Cantidad: {task.cantidad}</Text>
+      <Text>Precio: ${task.precio}</Text>
       <Text>{task.date}</Text>
 
       <TouchableOpacity
