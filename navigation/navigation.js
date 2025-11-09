@@ -15,7 +15,7 @@ import Carrito from "../screens/Carrito";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// 👇 Stack solo para Home
+// Stack solo para Home
 function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -24,7 +24,7 @@ function HomeStack() {
   );
 }
 
-// 👇 Stack para Lista y Detail
+// Stack para Lista y Detail
 function ListStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -35,7 +35,7 @@ function ListStack() {
   );
 }
 
-// 👇 Tabs principales
+// Tabs principales
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -62,7 +62,7 @@ function MainTabs() {
   );
 }
 
-// 👇 Navegación principal con login
+// Navegación principal con login
 export default function Navigation() {
   return (
     <NavigationContainer>

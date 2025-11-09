@@ -5,7 +5,7 @@ import { createTask, getTaskById, updateTask } from "../src/services/firestoreSe
 import Input from "../components/Input";
 import Button from "../components/Button";
 
-export default function Form({ route, navigation }) {
+export default function Formulario({ route, navigation }) {
   const [title, setTitle] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [precio, setPrecio] = useState("");

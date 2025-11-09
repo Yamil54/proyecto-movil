@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { getTaskById, deleteTask } from "../src/services/firestoreService";
 
-export default function Detail({ route, navigation }) {
+export default function Detalle({ route, navigation }) {
   const { id } = route.params;
   const [task, setTask] = useState(null);
 
