@@ -1,6 +1,6 @@
-// screens/Carrito.js
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Text, FlatList, TouchableOpacity, StyleSheet, Alert, View } from "react-native";
+import { Text, FlatList, TouchableOpacity, StyleSheet, Alert, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getCartItems, deleteCartItem } from "../src/services/firestoreService";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -9,12 +9,12 @@ export default function Carrito() {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) getCartItems().then(setCart).catch(err => Alert.alert("Error", err.message));
+    if (isFocused) getCartItems().then(setCart).catch(e => Alert.alert("Error", e.message));
   }, [isFocused]);
 
   const handleEliminar = async (id) => {
     await deleteCartItem(id);
-    setCart(prev => prev.filter(item => item.id !== id));
+    setCart(prev => prev.filter(i => i.id !== id));
   };
 
   const total = cart.reduce((acc, i) => acc + (i.precio || 0) * (i.cantidad || 0), 0);
@@ -22,7 +22,6 @@ export default function Carrito() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>🛒 Carrito</Text>
-
       <FlatList
         data={cart}
         keyExtractor={i => i.id}
@@ -40,7 +39,6 @@ export default function Carrito() {
         )}
         ListEmptyComponent={<Text style={styles.empty}>Tu carrito está vacío</Text>}
       />
-
       <View style={styles.footer}>
         <Text style={styles.total}>Total: ${total}</Text>
       </View>
@@ -49,7 +47,7 @@ export default function Carrito() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F7FBFF", padding: 20 },
+  container: { flex: 1, backgroundColor: "#F7FBFF", paddingHorizontal: 20, paddingTop: 20 },
   title: { fontSize: 22, fontWeight: "bold", marginBottom: 15 },
   card: { flexDirection: "row", alignItems: "center", backgroundColor: "#fff", padding: 12, borderRadius: 8, marginBottom: 10 },
   name: { fontSize: 16, fontWeight: "600" },

@@ -1,6 +1,13 @@
-// screens/Home.js
 import React, { useEffect, useState } from "react";
-import {View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert,} from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { auth } from "../src/config/firebaseConfig";
 import { signOut } from "firebase/auth";
@@ -43,9 +50,7 @@ export default function Home() {
 
       <View style={styles.content}>
         <Text style={styles.title}>ATLETIX GYM</Text>
-        <Text style={styles.subtitle}>
-          Gestioná tus productos y tu carrito de forma simple.
-        </Text>
+        <Text style={styles.subtitle}>Gestioná tus productos y tu carrito de forma simple.</Text>
       </View>
     </SafeAreaView>
   );
@@ -54,8 +59,9 @@ export default function Home() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F7FBFF" },
   header: {
-    padding: 20,
-    paddingTop: 40,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 15,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#E6EEF6",
@@ -68,7 +74,7 @@ const styles = StyleSheet.create({
   hello: { fontSize: 14, color: "#6B7A90" },
   email: { fontSize: 16, fontWeight: "700", color: "#122033" },
   logoutBtn: { backgroundColor: "#E64A19", padding: 10, borderRadius: 10 },
-  content: { padding: 20 },
-  title: { fontSize: 22, fontWeight: "800", color: "#0F1724" },
-  subtitle: { marginTop: 8, color: "#6B7A90" },
+  content: { flex: 1, paddingHorizontal: 20, justifyContent: "center", alignItems: "center" },
+  title: { fontSize: 26, fontWeight: "800", color: "#0F1724", textAlign: "center" },
+  subtitle: { marginTop: 12, color: "#6B7A90", fontSize: 16, textAlign: "center" },
 });
