@@ -8,14 +8,14 @@ import { ActivityIndicator, View, Text } from "react-native";
 import Login from "../screens/Login";
 import SignUp from "../screens/SignUp";
 import Home from "../screens/Home";
-import List from "../screens/List";
-import Form from "../screens/Form";
-import Detail from "../screens/Detail";
+import Lista from "../screens/Lista";
+import Formulario from "../screens/Formulario";
+import Detalle from "../screens/Detalle";
 import Carrito from "../screens/Carrito";
 import { getUserRole } from "../src/services/firestoreService";
 
-const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator(), Tab = createBottomTabNavigator();
+const icons = { Inicio: "home-outline", Productos: "list-outline", Agregar: "add-circle-outline", Carrito: "cart-outline" };
 
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -23,17 +23,16 @@ const HomeStack = () => (
   </Stack.Navigator>
 );
 
-const ListStack = () => (
+const ListaStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="List" component={List} />
-    <Stack.Screen name="Detail" component={Detail} />
-    <Stack.Screen name="Form" component={Form} />
+    <Stack.Screen name="Lista" component={Lista} />
+    <Stack.Screen name="Detalle" component={Detalle} />
+    <Stack.Screen name="Formulario" component={Formulario} />
   </Stack.Navigator>
 );
 
 function MainTabs() {
-  const [role, setRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState(null), [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getUserRole().then(setRole).catch(console.log).finally(() => setLoading(false));
@@ -55,20 +54,12 @@ function MainTabs() {
         tabBarActiveTintColor: "#0288D1",
         tabBarInactiveTintColor: "gray",
         tabBarStyle: { backgroundColor: "#fff", borderTopColor: "#eee" },
-        tabBarIcon: ({ color, size }) => {
-          const icons = {
-            Inicio: "home-outline",
-            Productos: "list-outline",
-            Agregar: "add-circle-outline",
-            Carrito: "cart-outline",
-          };
-          return <Ionicons name={icons[route.name]} size={size} color={color} />;
-        },
+        tabBarIcon: ({ color, size }) => <Ionicons name={icons[route.name]} size={size} color={color} />,
       })}
     >
       <Tab.Screen name="Inicio" component={HomeStack} />
-      <Tab.Screen name="Productos" component={ListStack} />
-      {role === "empleado" && <Tab.Screen name="Agregar" component={Form} />}
+      <Tab.Screen name="Productos" component={ListaStack} />
+      {role === "empleado" && <Tab.Screen name="Agregar" component={Formulario} />}
       {role === "cliente" && <Tab.Screen name="Carrito" component={Carrito} />}
     </Tab.Navigator>
   );

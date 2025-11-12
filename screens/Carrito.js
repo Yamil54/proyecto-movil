@@ -8,52 +8,39 @@ export default function Carrito() {
   const [cart, setCart] = useState([]);
   const isFocused = useIsFocused();
 
-  useEffect(() => {
-    if (isFocused) getCartItems().then(setCart).catch(e => Alert.alert("Error", e.message));
-  }, [isFocused]);
-
-  const handleEliminar = async (id) => {
-    await deleteCartItem(id);
-    setCart(prev => prev.filter(i => i.id !== id));
-  };
-
-  const total = cart.reduce((acc, i) => acc + (i.precio || 0) * (i.cantidad || 0), 0);
+  useEffect(() => { if (isFocused) getCartItems().then(setCart).catch(e => Alert.alert("Error", e.message)); }, [isFocused]);
+  const handleEliminar = async id => { try { await deleteCartItem(id); setCart(p => p.filter(i => i.id !== id)); } catch(e){ Alert.alert("Error", e.message);} };
+  const total = cart.reduce((acc, i) => acc + (i.precio||0)*(i.cantidad||0), 0);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>🛒 Carrito</Text>
+    <SafeAreaView style={s.c}>
+      <Text style={s.t}>🛒 Carrito</Text>
       <FlatList
         data={cart}
-        keyExtractor={i => i.id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.name}>{item.nombre}</Text>
+        keyExtractor={i=>i.id}
+        renderItem={({item})=>(
+          <View style={s.card}>
+            <View style={{flex:1}}>
+              <Text style={s.n}>{item.nombre}</Text>
               <Text>{item.cantidad} x ${item.precio}</Text>
-              <Text>Subtotal: ${item.precio * item.cantidad}</Text>
+              <Text>Subtotal: ${item.precio*item.cantidad}</Text>
             </View>
-            <TouchableOpacity style={styles.deleteBtn} onPress={() => handleEliminar(item.id)}>
-              <Text style={styles.deleteText}>X</Text>
+            <TouchableOpacity style={s.del} onPress={()=>handleEliminar(item.id)}>
+              <Text style={s.delTxt}>X</Text>
             </TouchableOpacity>
           </View>
         )}
-        ListEmptyComponent={<Text style={styles.empty}>Tu carrito está vacío</Text>}
+        ListEmptyComponent={<Text style={s.empty}>Tu carrito está vacío</Text>}
       />
-      <View style={styles.footer}>
-        <Text style={styles.total}>Total: ${total}</Text>
-      </View>
+      <View style={s.footer}><Text style={s.total}>Total: ${total}</Text></View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F7FBFF", paddingHorizontal: 20, paddingTop: 20 },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 15 },
-  card: { flexDirection: "row", alignItems: "center", backgroundColor: "#fff", padding: 12, borderRadius: 8, marginBottom: 10 },
-  name: { fontSize: 16, fontWeight: "600" },
-  deleteBtn: { backgroundColor: "#E64A19", padding: 8, borderRadius: 6 },
-  deleteText: { color: "#fff", fontWeight: "bold" },
-  empty: { textAlign: "center", marginTop: 40, color: "#666" },
-  footer: { borderTopWidth: 1, borderTopColor: "#ddd", paddingTop: 10, marginTop: 10 },
-  total: { fontSize: 18, fontWeight: "bold", color: "#0288D1", textAlign: "right" },
+const s = StyleSheet.create({
+  c:{flex:1,backgroundColor:"#F7FBFF",padding:20}, t:{fontSize:22,fontWeight:"bold",marginBottom:15},
+  card:{flexDirection:"row",alignItems:"center",backgroundColor:"#fff",padding:12,borderRadius:8,marginBottom:10},
+  n:{fontSize:16,fontWeight:"600"}, del:{backgroundColor:"#E64A19",padding:8,borderRadius:6}, delTxt:{color:"#fff",fontWeight:"bold"},
+  empty:{textAlign:"center",marginTop:40,color:"#666"}, footer:{borderTopWidth:1,borderTopColor:"#ddd",paddingTop:10,marginTop:10},
+  total:{fontSize:18,fontWeight:"bold",color:"#0288D1",textAlign:"right"}
 });
